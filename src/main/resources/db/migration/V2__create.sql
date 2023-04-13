@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS restaurant
     1depth          VARCHAR(15),
     2depth          VARCHAR(15),
     3depth          VARCHAR(15),
-    address_name    VARCHAR(50)     NOT NULL,
+    address_name    VARCHAR(50)     NOT NULL
 ) default character set utf8mb4
   collate utf8mb4_bin;
 
