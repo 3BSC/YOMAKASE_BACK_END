@@ -1,11 +1,14 @@
 package com.yomakase.yomakase.user.entity;
 
 import com.yomakase.yomakase.etc.entity.BaseEntity;
+import com.yomakase.yomakase.user.enums.UserType;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,9 +41,13 @@ public class UserEntity extends BaseEntity {
     @Column(name = "birth_day")
     private Date birthDay;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private UserType type;
+
     @Basic
-    @Column(name = "is_owner")
-    private Boolean isOwner;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Override
     public boolean equals(Object o) {
