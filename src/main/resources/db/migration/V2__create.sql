@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS user
     password        VARCHAR(60),
     nickname        VARCHAR(100),
     birth_day       TIMESTAMP,
-    is_owner        TINYINT(1)      NOT NULL DEFAULT 0
+    type            VARCHAR(20)      NOT NULL,
+    phone_number    VARCHAR(10)
 ) default character set utf8mb4
   collate utf8mb4_bin;
 
