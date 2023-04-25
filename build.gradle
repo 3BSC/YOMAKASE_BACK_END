@@ -52,6 +52,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
+	//mapstruct
+	implementation 'org.mapstruct:mapstruct:1.5.4.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.4.Final'
 }
 
 tasks.named('test') {
