@@ -3,6 +3,7 @@ package com.yomakase.yomakase.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yomakase.yomakase.etc.enums.TokenType;
+import com.yomakase.yomakase.user.enums.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -36,7 +37,7 @@ public class JwtUtil {
         this.jwtKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Long id, TokenType type) {
+    public String generateToken(Long id, TokenType type, UserType userType) {
 
         Map<String, Object> headers = new HashMap<>();
         headers.put("typ", "JWT");
@@ -44,6 +45,8 @@ public class JwtUtil {
 
         Map<String, Object> payloads = new HashMap<>();
         payloads.put("id", id);
+        payloads.put("sub", type.name());
+        payloads.put("aud", userType.toString());
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
