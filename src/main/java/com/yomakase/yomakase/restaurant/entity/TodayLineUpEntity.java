@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "today_line_up")
-public class TodyLineUpEntity {
+public class TodayLineUpEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
