@@ -9,6 +9,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Calendar;
@@ -31,8 +32,8 @@ public class JwtUtil {
 
     public static final short BEARER_LENGTH = 7;
 
-    public JwtUtil(@Value("%{jwt.key}") String key) {
-        this.jwtKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+    public JwtUtil(@Value("${jwt.key}") String key) {
+        this.jwtKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(Long id, TokenType type) {
