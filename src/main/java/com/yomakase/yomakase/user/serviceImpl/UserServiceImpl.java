@@ -1,5 +1,6 @@
 package com.yomakase.yomakase.user.serviceImpl;
 
+import com.yomakase.yomakase.etc.enums.TokenType;
 import com.yomakase.yomakase.user.dto.Token;
 import com.yomakase.yomakase.user.dto.request.SignUpRequest;
 import com.yomakase.yomakase.user.dto.request.UserRequest;
@@ -7,9 +8,11 @@ import com.yomakase.yomakase.user.dto.response.LoginResponse;
 import com.yomakase.yomakase.user.dto.response.SignUpResponse;
 import com.yomakase.yomakase.user.dto.response.UserResponse;
 import com.yomakase.yomakase.user.entity.UserEntity;
+import com.yomakase.yomakase.user.enums.UserType;
 import com.yomakase.yomakase.user.mapper.UserMapper;
 import com.yomakase.yomakase.user.repository.UserRepository;
 import com.yomakase.yomakase.user.service.UserService;
+import com.yomakase.yomakase.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     @Override
@@ -29,12 +33,13 @@ public class UserServiceImpl implements UserService {
         UserRequest userRequest = request.getUserRequest();
         UserEntity user = UserMapper.INSTANCE.toUserEntity(userRequest).toBuilder()
                 .password(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()))
+                .type(UserType.NORMAL)
                 .build();
 
         userRepository.save(user);
         SignUpResponse response = UserMapper.INSTANCE.toSignUpResponse(user);
 
-        Token token = getLoginToken(userRequest);
+        Token token = getLoginToken(user.getId(), user.getType());
         response.setToken(token);
 
         return response;
@@ -45,8 +50,14 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private Token getLoginToken(UserRequest request) throws Exception {
-        return null;
+    private Token getLoginToken(Long userId, UserType type) throws Exception {
+
+        Token token = new Token();
+
+        token.setAccessToken(jwtUtil.generateToken(userId, TokenType.ACCESS, type));
+        token.setRefreshToken(jwtUtil.generateToken(userId, TokenType.REFRESH, type));
+
+        return token;
     }
 
     @Override
