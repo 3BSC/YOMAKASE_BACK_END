@@ -8,7 +8,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -37,16 +36,22 @@ public class JwtUtil {
         this.jwtKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Long id, TokenType type, UserType userType) {
+    public String generateAccessToken(Long id, UserType type) {
+        return generateToken(id, "auth", type.toString(), TokenType.ACCESS);
+    }
 
+    public String generateRefreshToken(Long id, String uuid) {
+        return generateToken(id, "dev", uuid, TokenType.REFRESH);
+    }
+
+    private String generateToken(Long id, String key, Object value, TokenType type) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("typ", "JWT");
         headers.put("alg", "HS256");
 
         Map<String, Object> payloads = new HashMap<>();
         payloads.put("id", id);
-        payloads.put("sub", type.name());
-        payloads.put("aud", userType.toString());
+        payloads.put(key, value);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
