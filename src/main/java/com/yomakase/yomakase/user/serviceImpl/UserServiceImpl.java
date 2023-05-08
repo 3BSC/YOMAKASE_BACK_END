@@ -1,10 +1,8 @@
 package com.yomakase.yomakase.user.serviceImpl;
 
-import com.yomakase.yomakase.etc.enums.TokenType;
 import com.yomakase.yomakase.user.dto.Token;
 import com.yomakase.yomakase.user.dto.request.SignUpRequest;
 import com.yomakase.yomakase.user.dto.request.UserRequest;
-import com.yomakase.yomakase.user.dto.response.LoginResponse;
 import com.yomakase.yomakase.user.dto.response.SignUpResponse;
 import com.yomakase.yomakase.user.dto.response.UserResponse;
 import com.yomakase.yomakase.user.entity.UserEntity;
@@ -37,25 +35,32 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
-        SignUpResponse response = UserMapper.INSTANCE.toSignUpResponse(user);
-
         Token token = getLoginToken(user.getId(), user.getType());
-        response.setToken(token);
 
+        SignUpResponse response = UserMapper.INSTANCE.toSignUpResponse(user, token);
         return response;
     }
 
     @Override
-    public LoginResponse login(UserRequest request) throws Exception {
-        return null;
+    public Token login(UserRequest request) throws Exception {
+
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new Exception());
+
+        if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+            throw new Exception();
+        }
+
+        return getLoginToken(user.getId(), user.getType());
     }
 
     private Token getLoginToken(Long userId, UserType type) throws Exception {
 
         Token token = new Token();
+        token.setAccessToken(jwtUtil.generateAccessToken(userId, type));
 
-        token.setAccessToken(jwtUtil.generateToken(userId, TokenType.ACCESS, type));
-        token.setRefreshToken(jwtUtil.generateToken(userId, TokenType.REFRESH, type));
+        Integer deviceId = (int)(Math.random() * 10000);
+        token.setRefreshToken(jwtUtil.generateRefreshToken(userId, String.valueOf(deviceId)));
 
         return token;
     }
