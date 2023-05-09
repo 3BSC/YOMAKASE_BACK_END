@@ -9,6 +9,7 @@ import com.yomakase.yomakase.user.entity.UserEntity;
 import com.yomakase.yomakase.user.enums.UserType;
 import com.yomakase.yomakase.user.mapper.UserMapper;
 import com.yomakase.yomakase.user.repository.UserRepository;
+import com.yomakase.yomakase.user.service.InternalUserService;
 import com.yomakase.yomakase.user.service.UserService;
 import com.yomakase.yomakase.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    private final InternalUserService internalUserService;
 
     @Transactional
     @Override
@@ -67,13 +70,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getMe() throws Exception {
-        return null;
-    }
-
-    private void validateExistAccount(String account) throws Exception {
-        if (userRepository.existsByAccount(account)) {
-            throw new Exception();
-        }
+        UserEntity user = internalUserService.getLoginUser();
+        return UserMapper.INSTANCE.toUserResponse(user);
     }
 
     private void validateExistEmail(String email) throws Exception {
