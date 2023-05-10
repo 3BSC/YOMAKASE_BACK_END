@@ -16,12 +16,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Entity
 @SQLDelete(sql = "UPDATE user SET is_deleted = 1 WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @Table(name = "user")
 public class UserEntity extends BaseEntity {
 
