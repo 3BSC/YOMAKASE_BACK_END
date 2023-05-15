@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    properties:
+      hibernate.format_sql: true
+      default_batch_fetch_size: 100
+
+  redis:
+    host: ${NOSQL_URL}
+    port: ${NOSQL_PORT}
+
+flyway:
+  baseline-migration-prefix: true
+  enabled: true
+  url: ${DATABASE_URL}
+  username: ${DATABASE_USERNAME}
+  password: ${DATABASE_PASSWORD}
+
+server:
+  port: 8080
+
+jwt:
+  key: ${JWT_KEY}
+  access: ${ACCESS_STR}
+  refresh: ${REFRESH_STR}
