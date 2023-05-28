@@ -12,10 +12,11 @@ public enum ExceptionMessage {
 
 
     // 인증, 인가 관련 예외
-    INVALID_TOKEN(12, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    INVALID_ACCESS(13, "유효하지 않은 접근입니다.", HttpStatus.CONFLICT),
-    EXPIRED_TOKEN(14, "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    INVALID_TOKEN_TYPE(15,  "잘못된 토큰 타입입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1200, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    INVALID_ACCESS(1201, "유효하지 않은 접근입니다.", HttpStatus.CONFLICT),
+    EXPIRED_TOKEN(1202, "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    INVALID_TOKEN_TYPE(1203,  "잘못된 토큰 타입입니다.", HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED_ACCESS(1204, "인가되지 않은 접근입니다.", HttpStatus.UNAUTHORIZED),
     
     
 
