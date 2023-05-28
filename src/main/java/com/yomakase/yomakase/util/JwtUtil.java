@@ -2,7 +2,9 @@ package com.yomakase.yomakase.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yomakase.yomakase.etc.enums.ExceptionMessage;
 import com.yomakase.yomakase.etc.enums.TokenType;
+import com.yomakase.yomakase.etc.exception.NonCriticalException;
 import com.yomakase.yomakase.user.enums.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -70,7 +72,7 @@ public class JwtUtil {
 
     public boolean isValid(String token, TokenType tokenType) throws Exception {
         if (token == null || token.length() < BEARER_LENGTH + 1 || !token.startsWith("Bearer ")) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_TOKEN_TYPE);
         }
 
         Claims claims = null;
@@ -81,17 +83,17 @@ public class JwtUtil {
                     .parseClaimsJws(token.substring(BEARER_LENGTH))
                     .getBody();
         } catch (ExpiredJwtException expiredJwtException) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.EXPIRED_TOKEN);
         } catch (JwtException e) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_TOKEN);
         }
 
         if (claims.getSubject() == null || claims.get("id", Long.class) == null) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_TOKEN);
         }
 
         if (!claims.getSubject().equals(tokenType.isAccess() ? accessString : refreshString)) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_TOKEN);
         }
 
         return true;
@@ -105,7 +107,7 @@ public class JwtUtil {
         try {
             map = new ObjectMapper().readValue(payloads, HashMap.class);
         } catch (JsonProcessingException e) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_TOKEN);
         }
         return map;
     }

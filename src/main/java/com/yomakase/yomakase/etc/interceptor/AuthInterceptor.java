@@ -1,7 +1,9 @@
 package com.yomakase.yomakase.etc.interceptor;
 
 import com.yomakase.yomakase.etc.Auth;
+import com.yomakase.yomakase.etc.enums.ExceptionMessage;
 import com.yomakase.yomakase.etc.enums.TokenType;
+import com.yomakase.yomakase.etc.exception.NonCriticalException;
 import com.yomakase.yomakase.user.enums.UserType;
 import com.yomakase.yomakase.util.JwtUtil;
 import java.util.Map;
@@ -49,6 +51,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         }
 
-        throw new Exception();
+        throw new NonCriticalException(ExceptionMessage.UNAUTHORIZED_ACCESS);
     }
 }
