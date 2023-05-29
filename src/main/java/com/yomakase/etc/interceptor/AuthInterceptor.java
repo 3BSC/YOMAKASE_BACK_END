@@ -1,6 +1,6 @@
 package com.yomakase.etc.interceptor;
 
-import com.yomakase.etc.Auth;
+import com.yomakase.etc.annotation.Auth;
 import com.yomakase.etc.enums.ExceptionMessage;
 import com.yomakase.etc.enums.TokenType;
 import com.yomakase.etc.exception.NonCriticalException;

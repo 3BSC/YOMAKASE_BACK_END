@@ -1,6 +1,6 @@
 package com.yomakase.user.controller;
 
-import com.yomakase.etc.Auth;
+import com.yomakase.etc.annotation.Auth;
 import com.yomakase.user.dto.Token;
 import com.yomakase.user.dto.request.SignUpRequest;
 import com.yomakase.user.dto.request.UserRequest;

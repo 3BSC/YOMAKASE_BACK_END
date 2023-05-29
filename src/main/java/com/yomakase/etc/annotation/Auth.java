@@ -1,4 +1,4 @@
-package com.yomakase.etc;
+package com.yomakase.etc.annotation;
 
 import com.yomakase.user.enums.UserType;
 import java.lang.annotation.ElementType;
