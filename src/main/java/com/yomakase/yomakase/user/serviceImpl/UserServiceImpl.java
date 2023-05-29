@@ -1,5 +1,7 @@
 package com.yomakase.yomakase.user.serviceImpl;
 
+import com.yomakase.yomakase.etc.enums.ExceptionMessage;
+import com.yomakase.yomakase.etc.exception.NonCriticalException;
 import com.yomakase.yomakase.user.dto.Token;
 import com.yomakase.yomakase.user.dto.request.SignUpRequest;
 import com.yomakase.yomakase.user.dto.request.UserRequest;
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
     public SignUpResponse signUp(SignUpRequest request) throws Exception {
 
         UserRequest userRequest = request.getUserRequest();
+        validateExistEmail(userRequest.getEmail());
+
         UserEntity user = UserMapper.INSTANCE.toUserEntity(userRequest).toBuilder()
                 .password(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()))
                 .type(UserType.NORMAL)
@@ -48,10 +52,10 @@ public class UserServiceImpl implements UserService {
     public Token login(UserRequest request) throws Exception {
 
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new Exception());
+                .orElseThrow(() -> new NonCriticalException(ExceptionMessage.USER_NOT_EXISTS_EXCEPTION));
 
         if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.INVALID_ACCESS);
         }
 
         return getLoginToken(user.getId(), user.getType());
@@ -62,7 +66,7 @@ public class UserServiceImpl implements UserService {
         Token token = new Token();
         token.setAccessToken(jwtUtil.generateAccessToken(userId, type));
 
-        Integer deviceId = (int)(Math.random() * 10000);
+        Integer deviceId = (int) (Math.random() * 10000);
         token.setRefreshToken(jwtUtil.generateRefreshToken(userId, String.valueOf(deviceId)));
 
         return token;
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateExistEmail(String email) throws Exception {
         if (userRepository.existsByEmail(email)) {
-            throw new Exception();
+            throw new NonCriticalException(ExceptionMessage.USER_ALREADY_EXIST);
         }
     }
 
