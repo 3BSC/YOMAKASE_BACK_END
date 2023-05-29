@@ -34,6 +34,8 @@ public class UserServiceImpl implements UserService {
     public SignUpResponse signUp(SignUpRequest request) throws Exception {
 
         UserRequest userRequest = request.getUserRequest();
+        validateExistEmail(userRequest.getEmail());
+
         UserEntity user = UserMapper.INSTANCE.toUserEntity(userRequest).toBuilder()
                 .password(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()))
                 .type(UserType.NORMAL)
