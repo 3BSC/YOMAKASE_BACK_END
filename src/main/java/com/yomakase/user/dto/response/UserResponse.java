@@ -1,5 +1,6 @@
 package com.yomakase.user.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yomakase.user.enums.UserType;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class UserResponse {
 
     private String nickname;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthDay;
 
     private UserType type;
