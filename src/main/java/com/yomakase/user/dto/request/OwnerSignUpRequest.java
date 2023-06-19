@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpRequest {
+public class OwnerSignUpRequest {
 
     private UserRequest userRequest;
 
