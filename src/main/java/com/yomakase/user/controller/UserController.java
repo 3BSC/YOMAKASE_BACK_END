@@ -2,7 +2,7 @@ package com.yomakase.user.controller;
 
 import com.yomakase.etc.annotation.Auth;
 import com.yomakase.user.dto.Token;
-import com.yomakase.user.dto.request.SignUpRequest;
+import com.yomakase.user.dto.request.OwnerSignUpRequest;
 import com.yomakase.user.dto.request.UserRequest;
 import com.yomakase.user.dto.response.SignUpResponse;
 import com.yomakase.user.dto.response.UserResponse;
@@ -24,8 +24,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/user/register")
-    public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest request) throws Exception {
+    public ResponseEntity<SignUpResponse> signUp(@RequestBody UserRequest request) throws Exception {
         return new ResponseEntity<>(userService.signUp(request), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/owner/register")
+    public ResponseEntity<SignUpResponse> ownerSignUp(@RequestBody OwnerSignUpRequest request) throws Exception {
+        return new ResponseEntity<>(userService.ownerSignUp(request), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/user/login")

@@ -3,7 +3,7 @@ package com.yomakase.user.serviceImpl;
 import com.yomakase.etc.enums.ExceptionMessage;
 import com.yomakase.etc.exception.NonCriticalException;
 import com.yomakase.user.dto.Token;
-import com.yomakase.user.dto.request.SignUpRequest;
+import com.yomakase.user.dto.request.OwnerSignUpRequest;
 import com.yomakase.user.dto.request.UserRequest;
 import com.yomakase.user.dto.response.SignUpResponse;
 import com.yomakase.user.dto.response.UserResponse;
@@ -31,21 +31,38 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public SignUpResponse signUp(SignUpRequest request) throws Exception {
+    public SignUpResponse signUp(UserRequest request) throws Exception {
 
-        UserRequest userRequest = request.getUserRequest();
-        validateExistEmail(userRequest.getEmail());
+        UserEntity user = userSignUp(request, UserType.NORMAL);
 
-        UserEntity user = UserMapper.INSTANCE.toUserEntity(userRequest).toBuilder()
-                .password(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()))
-                .type(UserType.NORMAL)
-                .build();
-
-        userRepository.save(user);
         Token token = getLoginToken(user.getId(), user.getType());
 
         SignUpResponse response = UserMapper.INSTANCE.toSignUpResponse(user, token);
         return response;
+    }
+
+    @Override
+    public SignUpResponse ownerSignUp(OwnerSignUpRequest request) throws Exception {
+
+        UserRequest userRequest = request.getUserRequest();
+        UserEntity user = userSignUp(userRequest, UserType.OWNER);
+
+        Token token = getLoginToken(user.getId(), user.getType());
+
+        SignUpResponse response = UserMapper.INSTANCE.toSignUpResponse(user, token);
+        return response;
+    }
+
+    private UserEntity userSignUp(UserRequest request, UserType type) throws Exception {
+        validateExistEmail(request.getEmail());
+
+        UserEntity user = UserMapper.INSTANCE.toUserEntity(request).toBuilder()
+                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()))
+                .type(type)
+                .build();
+
+        userRepository.save(user);
+        return user;
     }
 
     @Override
